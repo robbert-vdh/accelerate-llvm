@@ -39,6 +39,7 @@ import Data.Array.Accelerate.LLVM.PTX.State
 import Data.Array.Accelerate.LLVM.PTX.Target
 import Data.Array.Accelerate.LLVM.PTX.Execute.Async
 import qualified Data.Array.Accelerate.LLVM.PTX.Array.Prim          as Prim
+import qualified Data.Array.Accelerate.LLVM.PTX.Execute.Event       as Event
 
 -- standard library
 import Control.Applicative
@@ -110,9 +111,9 @@ copyToHostLazy (TupRsingle (ArrayR shr tp)) future@(Future ref) = do
   liftIO $ do
     ivar <- readIORef ref
     (Array sh adata) <- case ivar of
-      Full a        -> return a
-      Pending _ _ a -> return a
-      Empty         -> $internalError "copyToHostLazy" "blocked on an IVar"
+      Full a            -> return a
+      Pending event _ a -> Event.block event >> return a
+      Empty             -> $internalError "copyToHostLazy" "blocked on an IVar"
 
     -- Note: [Lazy device-host transfers]
     --

@@ -10,7 +10,7 @@ packages:
 
 extra-deps:
 - github: AccelerateHS/accelerate
-  commit: de95f21285a0a39df8b391e27bdf4a47890debb9
+  commit: 632b3fe460bb59fefe6eb20df713d91798b6b494
 
 - cuda-0.10.0.0
 - half-0.3
